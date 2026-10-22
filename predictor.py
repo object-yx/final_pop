@@ -106,11 +106,10 @@ if st.button("Predict"):
     shap_values[0],
     pd.DataFrame([feature_values], columns=feature_names),
     matplotlib=True,
-    show=False,)
-
-  st.pyplot(fig)
-  plt.close(fig)
-  st.caption("SHAP Force Plot Explanation")
+    show=False)
+    st.pyplot(fig)
+    plt.close(fig)
+    st.caption("SHAP Force Plot Explanation")
 
 
 # In[ ]:
