@@ -4,12 +4,7 @@
 # In[3]:
 
 
-import sys
-from importlib.metadata import version
 
-st.write("Python:", sys.version)
-for package in ["streamlit", "starlette", "uvicorn", "shap"]:
-    st.write(f"{package}: {version(package)}")
 import streamlit as st
 import joblib
 import numpy as np
@@ -18,7 +13,12 @@ import shap
 import matplotlib.pyplot as plt
 import matplotlib
 
+import sys
+from importlib.metadata import version
 
+st.write("Python:", sys.version)
+for package in ["streamlit", "starlette", "uvicorn", "shap"]:
+    st.write(f"{package}: {version(package)}")
 # In[5]:
 
 
