@@ -12,13 +12,9 @@ import pandas as pd
 import shap
 import matplotlib.pyplot as plt
 import matplotlib
+import base64
+from io import BytesIO
 
-import sys
-from importlib.metadata import version
-
-st.write("Python:", sys.version)
-for package in ["streamlit", "starlette", "uvicorn", "shap"]:
-    st.write(f"{package}: {version(package)}")
 # In[5]:
 
 
@@ -107,14 +103,24 @@ if st.button("Predict"):
     st.subheader("SHAP")
     explainer_shap = shap.TreeExplainer(model)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values], columns = feature_names))
-    fig = shap.force_plot(
+   fig = shap.force_plot(
     explainer_shap.expected_value,
     shap_values[0],
     pd.DataFrame([feature_values], columns=feature_names),
     matplotlib=True,
-    show=False)
-    st.pyplot(fig)
+    show=False,)
+
+    buffer = BytesIO()
+    fig.savefig(buffer, format="png", bbox_inches="tight", dpi=150)
     plt.close(fig)
+
+    image_base64 = base64.b64encode(buffer.getvalue()).decode("ascii")
+
+    st.markdown(
+    f'<img src="data:image/png;base64,{image_base64}" '
+    'style="width:100%;height:auto;" alt="SHAP force plot">',
+    unsafe_allow_html=True,
+    )
     st.caption("SHAP Force Plot Explanation")
 
 
