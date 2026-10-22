@@ -9,7 +9,8 @@ import joblib
 import numpy as np
 import pandas as pd
 import shap
-import matplotlib as plt
+import matplotlib.pyplot as plt
+import matplotlib
 
 
 # In[5]:
@@ -56,14 +57,14 @@ mi = st.number_input("MISC:",min_value=0,max_value=100,value=55)
 # In[11]:
 
 
-htn = st.selectbox("HTN:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
-dm = st.selectbox("DM:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
-zgjl = st.selectbox("UFs:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
-opl = st.selectbox("OPL:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
-sui = st.selectbox("SUI:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
-ST = st.selectbox("St:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
-vl = st.selectbox("VL:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
-gxb = st.selectbox("CHD:",options=[0,1],format_func=lambda x:"是" if x==1 else "否")
+htn = st.sidebar.selectbox("HTN:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
+dm = st.sidebar.selectbox("DM:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
+zgjl = st.sidebar.selectbox("UFs:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
+opl = st.sidebar.selectbox("OPL:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
+sui = st.sidebar.selectbox("SUI:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
+ST = st.sidebar.selectbox("St:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
+vl = st.sidebar.selectbox("VL:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
+gxb = st.sidebar.selectbox("CHD:",options=[0,1],format_func=lambda x:"Yes" if x==1 else "NO")
 
 
 # In[12]:
@@ -86,25 +87,22 @@ if st.button("Predict"):
   with tab1:
     predicted_class = model.predict(features)[0]
     predicted_proba = model.predict_proba(features)[0]
-    st.write(f"The prediction result for pelvic organ prolapse is:{predicted_class}(1:Prolapse,0:Normal)")
-    st.write(f"The likelihood of pelvic organ prolapse is:{predicted_proba}")
+    st.write(f"The prediction result for pelvic organ prolapse is:  {predicted_class}(1:Prolapse,0:Normal)")
+    st.write(f"The likelihood of pelvic organ prolapse is:  {predicted_proba}")
     probability = predicted_proba[predicted_class]*100
     if predicted_class == 1:
         advice = (f"High risk"
-                  f"The likelihood of pelvic organ prolapse is{probability:1f}%")
+                  f"The likelihood of pelvic organ prolapse is  {probability:1f}%")
     else:
         advice = (f"Low risk"
-                  f"The likelihood of pelvic organ prolapse is{probability:1f}%")
+                  f"The likelihood of pelvic organ prolapse is  {probability:1f}%")
     st.write(advice)
   with tab2:
     st.subheader("SHAP")
     explainer_shap = shap.TreeExplainer(model)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values], columns = feature_names))
-    if predicted_class == 1:
-        shap.force_plot(explainer_shap.expected_value, shap_values[1],pd.DataFrame([feature_names], columns = feature_names),matplotlib=True)
-    else:
-        shap.force_plot(explainer_shap.expected_value, shap_values[0],pd.DataFrame([feature_names], columns = feature_names),matplotlib=True)
-    plt.savefig("shap_force_plot.png",bbox_inches="tight",dpi=1200)
+    shap.force_plot(explainer_shap.expected_value, shap_values[0],pd.DataFrame([feature_values],columns=feature_names),matplotlib=True)
+    matplotlib.pyplot.savefig("shap_force_plot.png",bbox_inches="tight",dpi=1200)
     st.image("shap_force_plot.png",caption="SHAP Force Plot Explanation")
 
 
