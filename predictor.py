@@ -101,9 +101,16 @@ if st.button("Predict"):
     st.subheader("SHAP")
     explainer_shap = shap.TreeExplainer(model)
     shap_values = explainer_shap.shap_values(pd.DataFrame([feature_values], columns = feature_names))
-    shap.force_plot(explainer_shap.expected_value, shap_values[0],pd.DataFrame([feature_values],columns=feature_names),matplotlib=True)
-    matplotlib.pyplot.savefig("shap_force_plot.png",bbox_inches="tight",dpi=1200)
-    st.image("shap_force_plot.png",caption="SHAP Force Plot Explanation")
+    fig = shap.force_plot(
+    explainer_shap.expected_value,
+    shap_values[0],
+    pd.DataFrame([feature_values], columns=feature_names),
+    matplotlib=True,
+    show=False,)
+
+  st.pyplot(fig)
+  plt.close(fig)
+  st.caption("SHAP Force Plot Explanation")
 
 
 # In[ ]:
